@@ -1,11 +1,11 @@
-import ActivityCard, { type Activity } from "@/components/ActivityCard";
+import ActivityCard from "@/components/ActivityCard";
 import { client } from "@/lib/sanity";
 import { activitiesQuery } from "@/lib/queries";
 
 export const metadata = { title: "Activités & Guide — Villa Villaverde" };
 
 export default async function GuidePage() {
-  // On récupère les activités depuis Sanity (si dispo)
+  // Récup Sanity
   let items: any[] = [];
   try {
     items = await client.fetch(activitiesQuery);
@@ -13,7 +13,7 @@ export default async function GuidePage() {
     /* ignore */
   }
 
-  // Fallback démo si pas de données Sanity
+  // Fallback si pas de données
   if (!items || items.length === 0) {
     items = [
       { title: "Dunes de Corralejo", category: "Plages", distance: "≈ 15 min" },
@@ -34,10 +34,9 @@ export default async function GuidePage() {
         {items.map((it: any) => (
           <ActivityCard
             key={it._id ?? it.title}
-            // —— Props à plat attendues par ActivityCard ——
             title={it.title}
             category={it.category}
-            subtitle={it.subtitle ?? it.distance /* fallback lisible */}
+            subtitle={it.subtitle ?? it.distance}
             img={it.img}
             href={it.href}
             objectPosition={it.objectPosition}
@@ -48,4 +47,5 @@ export default async function GuidePage() {
     </main>
   );
 }
+
 
