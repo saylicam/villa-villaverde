@@ -1,0 +1,520 @@
+@import "tailwindcss";
+/* Pour Tailwind v4 : ces directives aident l'indexation des classes */
+@source "./app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "./components/**/*.{js,ts,jsx,tsx,mdx}";
+
+/* =========================================
+   THEME LUXE — sobre & propre
+   ========================================= */
+:root{
+  /* Neutres */
+  --page:#F6F7F8;
+  --surface:#FFFFFF;
+  --ink:#0F1215;
+  --muted:#667085;
+  --line:#E5E7EB;
+
+  /* Accent (bronze/champagne discret) */
+  --accent:#B08D57;
+  --accent-ink:#111315; /* CTA foncé */
+
+  /* Compat anciennes vars (si des composants en dépendent) */
+  --sand: var(--page);
+  --ocean: var(--accent);
+  --forest:#1F6E8C;
+  --stone: var(--line);
+  --gold:#C9A646;
+
+  /* Polices (injectées par next/font) */
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-display: var(--font-display);
+}
+
+/* =========================================
+   RESET + RENDU PROPRE
+   ========================================= */
+*,
+*::before,
+*::after{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  color:var(--ink);
+  background:var(--page);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-family: var(--font-sans, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+::selection{ background: color-mix(in oklab, var(--accent) 40%, white); color:#fff; }
+
+/* =========================================
+   UTILITAIRES
+   ========================================= */
+@layer utilities{
+  .container { max-width:1200px; margin-inline:auto; padding-inline:1rem; }
+
+  /* Titres */
+  .title-serif   { font-family: var(--font-serif, Georgia, serif); letter-spacing:.2px; }
+  .title-display { font-family: var(--font-display, var(--font-serif, Georgia, serif)); font-weight:600; letter-spacing:.005em; }
+
+  /* Échelles typographiques */
+  .h1   { font-size: clamp(34px, 4.4vw, 64px); line-height: 1.06; letter-spacing: -0.01em; }
+  .h2   { font-size: clamp(24px, 3vw, 40px);   line-height: 1.12; letter-spacing: -0.01em; }
+  .lead { font-size: clamp(16px, 1.6vw, 18px); line-height: 1.65; color: var(--muted); }
+
+  /* Boutons (contraste garanti) */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition;
+    border:1px solid rgba(16,18,21,.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    color: inherit; /* hérite (fixe les labels invisibles) */
+  }
+  .btn *, .btn svg{ color: inherit !important; }
+  .btn-primary{ background: var(--accent-ink); color:#fff !important; border-color: transparent; }
+  .btn-primary:hover{ filter:brightness(.95); }
+  .btn-dark{ background: var(--accent-ink); color:#fff !important; }
+  .btn-dark:hover{ filter:brightness(1.05); }
+  .btn-light{ background:#fff; color:var(--ink) !important; border:1px solid var(--line); }
+  .btn-light:hover{ filter:brightness(.98); }
+  .btn:focus{ outline:2px solid rgba(176,141,87,.28); outline-offset:2px; }
+
+  /* Surfaces / cards */
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:1rem; }
+  .shadow-soft { box-shadow: 0 12px 40px rgba(0,0,0,.06); }
+
+  /* Badges */
+  .chip { @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs; }
+  .chip { background: rgba(176,141,87,.10); border:1px solid rgba(176,141,87,.25); color: var(--accent-ink); }
+
+  /* Lisibilité sur image */
+  .text-shadow-xl{ text-shadow: 0 3px 28px rgba(0,0,0,.45), 0 1px 10px rgba(0,0,0,.35); }
+
+  /* Masque/fondu bas */
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
+    mask-image: linear-gradient(to bottom, #000 78%, transparent);
+  }
+
+  /* Ajust hero mobile si besoin */
+  .hero-mobile-image-fix img { object-position: center top !important; object-fit: cover !important; }
+}
+
+/* HÉRO — voiles de lisibilité */
+.hero-veil{
+  position:absolute; inset:0; pointer-events:none;
+  background: linear-gradient(to top, rgba(0,0,0,.52), rgba(0,0,0,.26) 45%, rgba(0,0,0,0));
+}
+.hero-veil-boost{
+  position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(140% 80% at 50% 45%, rgba(0,0,0,.32), transparent 60%);
+}
+
+/* Liens neutres (sans impacter les boutons) */
+main a:not(.btn){ color: var(--ink); }
+main a:not(.btn):hover{ opacity:.85; }
+
+/* Calendrier (react-day-picker) */
+.rdp button{ color: var(--ink); }
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover{
+  background: var(--accent-ink) !important;
+  color:#fff !important;
+  border-color: transparent !important;
+}
+.rdp-day_today{ border:1px solid rgba(176,141,87,.45) !important; }
+.rdp-nav_button{ color: var(--ink) !important; }
+
+/* =========================================
+   TEXTE SUR IMAGE (forçage blanc + ombres)
+   ========================================= */
+.title-on-image{ 
+  color:#fff !important;
+  text-shadow: 0 4px 30px rgba(0,0,0,.55), 0 1px 10px rgba(0,0,0,.35);
+}
+.lead-on-image{
+  color: rgba(255,255,255,.96) !important;
+  text-shadow: 0 3px 22px rgba(0,0,0,.50), 0 1px 8px rgba(0,0,0,.35);
+}
+
+/* =========================================
+   ACTIVITÉS — Posters rectangulaires + rythme
+   (tu peux utiliser .posters-grid OU .masonry)
+   ========================================= */
+
+/* Option Masonry (si tu l’utilises quelque part) */
+.masonry{ column-gap: 1.25rem; }
+@media (min-width: 640px){ .masonry{ column-count: 2; } }
+@media (min-width: 768px){ .masonry{ column-count: 3; } }
+@media (min-width: 1024px){ .masonry{ column-count: 4; } }
+.masonry-item{ break-inside: avoid; margin-bottom: 1.25rem; }
+
+/* Grid “posters” avec rythme visuel */
+.posters-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+/* 2 colonnes */
+@media (min-width:640px){
+  .posters-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .posters-grid .poster{ margin-top: 0; }
+  .posters-grid .poster:nth-child(2n+1){ margin-top: 2.0rem; } /* bas */
+  .posters-grid .poster:nth-child(2n){   margin-top: 0; }      /* haut */
+}
+/* 3 colonnes */
+@media (min-width:1024px){
+  .posters-grid{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .posters-grid .poster{ margin-top: 0; }
+  .posters-grid .poster:nth-child(3n+1){ margin-top: 2.0rem; } /* bas */
+  .posters-grid .poster:nth-child(3n+2){ margin-top: 0; }      /* haut */
+  .posters-grid .poster:nth-child(3n+3){ margin-top: 3.5rem; } /* très bas */
+}
+/* 4 colonnes */
+@media (min-width:1280px){
+  .posters-grid{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .posters-grid .poster{ margin-top: 0; }
+  .posters-grid .poster:nth-child(4n+1){ margin-top: 3.0rem; } /* bas */
+  .posters-grid .poster:nth-child(4n+2){ margin-top: 0; }      /* haut */
+  .posters-grid .poster:nth-child(4n+3){ margin-top: 4.5rem; } /* très bas */
+  .posters-grid .poster:nth-child(4n+4){ margin-top: 1.5rem; } /* moyen */
+}
+
+/* Posters rectangulaires (coins carrés + clipping propre) */
+.poster{ overflow: hidden; }
+.poster-rect { border-radius: 0 !important; }
+
+/* Hauteurs verticalisées (tu peux pousser si tu veux) */
+.act-h-short{ height: 460px; }
+.act-h-mid{   height: 620px; }
+.act-h-tall{  height: 760px; }
+@media (min-width:1280px){
+  .act-h-short{ height: 520px; }
+  .act-h-mid{   height: 700px; }
+  .act-h-tall{  height: 860px; }
+}
+
+/* =========================================
+   SUITES — Upgrade visuel SANS changer page.tsx
+   (fonctionne avec ou sans les classes .suite-shell/.upgrade-suite-card)
+   ========================================= */
+
+/* Ancre qui contient l'image + panneau texte */
+section#suites .grid > * a,
+.suite-shell .upgrade-suite-card{
+  display:block;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 1rem;
+  overflow: visible !important; /* panneau verre peut dépasser */
+}
+
+/* Bloc image — on allonge légèrement la carte (override aspect-ratio inline) */
+section#suites .grid > * a > .relative,
+.suite-shell .upgrade-suite-card > .relative{
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 6 / 5 !important; /* ≈1.20 : + long que 4/3 */
+}
+@media (min-width: 768px){
+  section#suites .grid > * a > .relative,
+  .suite-shell .upgrade-suite-card > .relative{ aspect-ratio: 7 / 6 !important; }
+}
+@media (min-width: 1280px){
+  section#suites .grid > * a > .relative,
+  .suite-shell .upgrade-suite-card > .relative{ aspect-ratio: 8 / 7 !important; }
+}
+
+/* Zoom doux au hover */
+section#suites .grid > * a > .relative img,
+.suite-shell .upgrade-suite-card > .relative img{
+  transition: transform .55s cubic-bezier(.2,.7,.2,1);
+}
+section#suites .grid > * a:hover > .relative img,
+.suite-shell:hover .upgrade-suite-card > .relative img{
+  transform: scale(1.035);
+}
+
+/* Voile de lisibilité en bas de l'image */
+section#suites .grid > * a > .relative::after,
+.suite-shell .upgrade-suite-card > .relative::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:0;
+  height:40%;
+  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.15), transparent);
+  pointer-events:none;
+}
+
+/* Panneau “verre” (le bloc .p-5) chevauche l'image */
+section#suites .grid > * a > .p-5,
+.suite-shell .upgrade-suite-card > .p-5{
+  margin-top: -26px; /* remonte un peu plus */
+  background: rgba(255,255,255,.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: 0 12px 40px rgba(0,0,0,.06);
+  transition: box-shadow .35s ease, transform .35s ease;
+}
+section#suites .grid > * a:hover > .p-5,
+.suite-shell:hover .upgrade-suite-card > .p-5{
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.12);
+}
+
+/* Signature luxe : fin filet bronze vertical au survol */
+section#suites .grid > * a > .relative::before,
+.suite-shell .upgrade-suite-card > .relative::before{
+  content:"";
+  position:absolute; inset:10px auto 10px 10px;
+  width:2px;
+  background: linear-gradient(180deg,
+    rgba(176,141,87,0) 0%,
+    rgba(176,141,87,.55) 45%,
+    rgba(176,141,87,0) 100%);
+  opacity: 0;
+  transform: scaleY(.85);
+  border-radius: 2px;
+  transition: opacity .35s ease, transform .35s ease;
+}
+section#suites .grid > * a:hover > .relative::before,
+.suite-shell:hover .upgrade-suite-card > .relative::before{
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* Texte de la liste plus doux */
+section#suites .grid > * a > .p-5 ul li,
+.suite-shell .upgrade-suite-card > .p-5 ul li{
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* =========================================
+   ACCESSIBILITÉ — reduced motion
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}
+/* ============================================================
+   SUITES — Forcer l’upgrade sur les 3 cartes existantes
+   (fonctionne même si l'id n'est pas sur <section>)
+   ============================================================ */
+
+/* 0) Cible très large : l'ancre de la carte (neutre) */
+#suites .grid a,
+#suites a.block,
+a[href^="/suites/"] {
+  display:block;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 1rem;
+  overflow: visible !important; /* pour que le panneau verre dépasse */
+}
+
+/* 1) Bloc image (le <div class="relative"> juste dedans) — on allonge la carte */
+#suites .grid a > .relative,
+#suites a.block > .relative,
+a[href^="/suites/"] > .relative{
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 6 / 5 !important;   /* plus haut que 4/3 */
+}
+@media (min-width: 768px){
+  #suites .grid a > .relative,
+  #suites a.block > .relative,
+  a[href^="/suites/"] > .relative{ aspect-ratio: 7 / 6 !important; }
+}
+@media (min-width: 1280px){
+  #suites .grid a > .relative,
+  #suites a.block > .relative,
+  a[href^="/suites/"] > .relative{ aspect-ratio: 8 / 7 !important; }
+}
+
+/* 2) Zoom image doux */
+#suites .grid a > .relative img,
+#suites a.block > .relative img,
+a[href^="/suites/"] > .relative img{
+  transition: transform .55s cubic-bezier(.2,.7,.2,1);
+}
+#suites .grid a:hover > .relative img,
+#suites a.block:hover > .relative img,
+a[href^="/suites/"]:hover > .relative img{
+  transform: scale(1.035);
+}
+
+/* 3) Voile de lisibilité en bas de l'image */
+#suites .grid a > .relative::after,
+#suites a.block > .relative::after,
+a[href^="/suites/"] > .relative::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:0;
+  height:40%;
+  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.15), transparent);
+  pointer-events:none;
+}
+
+/* 4) Panneau “verre” : ton <div class="p-5"> qui chevauche l'image */
+#suites .grid a > .p-5,
+#suites a.block > .p-5,
+a[href^="/suites/"] > .p-5{
+  margin-top: -26px; /* chevauche un peu plus que -22px */
+  background: rgba(255,255,255,.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: 0 12px 40px rgba(0,0,0,.06);
+  transition: box-shadow .35s ease, transform .35s ease;
+}
+#suites .grid a:hover > .p-5,
+#suites a.block:hover > .p-5,
+a[href^="/suites/"]:hover > .p-5{
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.12);
+}
+
+/* 5) Filet bronze discret au survol (signature luxe) */
+#suites .grid a > .relative::before,
+#suites a.block > .relative::before,
+a[href^="/suites/"] > .relative::before{
+  content:"";
+  position:absolute; inset:10px auto 10px 10px;
+  width:2px;
+  background: linear-gradient(180deg,
+    rgba(176,141,87,0) 0%,
+    rgba(176,141,87,.55) 45%,
+    rgba(176,141,87,0) 100%);
+  opacity: 0;
+  transform: scaleY(.85);
+  border-radius: 2px;
+  transition: opacity .35s ease, transform .35s ease;
+}
+#suites .grid a:hover > .relative::before,
+#suites a.block:hover > .relative::before,
+a[href^="/suites/"]:hover > .relative::before{
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* 6) Texte listes plus doux */
+#suites .grid a > .p-5 ul li,
+#suites a.block > .p-5 ul li,
+a[href^="/suites/"] > .p-5 ul li{
+  color: var(--muted);
+  line-height: 1.55;
+}
+/* ============================================================
+   SUITES — Cartes plus longues + panneau “verre”
+   (aucune modif de page.tsx nécessaire)
+   ============================================================ */
+
+:root{
+  /* Tune ici la hauteur des rectangles (plus la 1ère valeur est grande, plus c'est “long”) */
+  --suite-aspect-sm: 7 / 5;  /* <768px */
+  --suite-aspect-md: 8 / 5;  /* ≥768px */
+  --suite-aspect-lg: 9 / 5;  /* ≥1280px */
+}
+
+/* Base : l’ancre de ta carte */
+#suites .grid a,
+#suites a.block,
+a[href^="/suites/"]{
+  display:block;
+  background:transparent !important;
+  border:0 !important;
+  border-radius: 20px;
+  overflow:visible !important;
+}
+
+/* Bloc image (override l’aspect-ratio inline) */
+#suites .grid a > .relative,
+#suites a.block > .relative,
+a[href^="/suites/"] > .relative{
+  position:relative;
+  overflow:hidden;
+  border-radius: 20px 20px 0 0;
+  aspect-ratio: var(--suite-aspect-sm) !important;
+}
+@media (min-width:768px){
+  #suites .grid a > .relative,
+  #suites a.block > .relative,
+  a[href^="/suites/"] > .relative{
+    aspect-ratio: var(--suite-aspect-md) !important;
+  }
+}
+@media (min-width:1280px){
+  #suites .grid a > .relative,
+  #suites a.block > .relative,
+  a[href^="/suites/"] > .relative{
+    aspect-ratio: var(--suite-aspect-lg) !important;
+  }
+}
+
+/* Zoom image + voile de lisibilité bas */
+#suites .grid a > .relative img,
+#suites a.block > .relative img,
+a[href^="/suites/"] > .relative img{
+  transition: transform .6s cubic-bezier(.2,.7,.2,1);
+}
+#suites .grid a:hover > .relative img,
+#suites a.block:hover > .relative img,
+a[href^="/suites/"]:hover > .relative img{
+  transform: scale(1.04);
+}
+#suites .grid a > .relative::after,
+#suites a.block > .relative::after,
+a[href^="/suites/"] > .relative::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:0; height:42%;
+  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.12), transparent);
+  pointer-events:none;
+}
+
+/* Panneau “verre” qui chevauche l’image */
+#suites .grid a > .p-5,
+#suites a.block > .p-5,
+a[href^="/suites/"] > .p-5{
+  position:relative;
+  margin-top: -28px;                /* chevauche davantage */
+  background: rgba(255,255,255,.88);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 16px 44px rgba(0,0,0,.08);
+  transition: transform .35s ease, box-shadow .35s ease;
+  min-height: 150px;
+}
+@media (min-width:1024px){
+  #suites .grid a > .p-5,
+  #suites a.block > .p-5,
+  a[href^="/suites/"] > .p-5{ min-height: 180px; }
+}
+#suites .grid a:hover > .p-5,
+#suites a.block:hover > .p-5,
+a[href^="/suites/"]:hover > .p-5{
+  transform: translateY(-2px);
+  box-shadow: 0 24px 64px rgba(0,0,0,.12);
+}
+
+/* Liseré bronze discret en haut du panneau (signature luxe) */
+#suites .grid a > .p-5::before,
+#suites a.block > .p-5::before,
+a[href^="/suites/"] > .p-5::before{
+  content:""; position:absolute; left:16px; right:16px; top:0; height:2px; border-radius:2px;
+  background: linear-gradient(90deg, rgba(176,141,87,0), rgba(176,141,87,.55), rgba(176,141,87,0));
+}
+
+/* Texte des bullets un peu plus doux */
+#suites .grid a > .p-5 ul li,
+#suites a.block > .p-5 ul li,
+a[href^="/suites/"] > .p-5 ul li{
+  color: var(--muted);
+  line-height: 1.55;
+}
