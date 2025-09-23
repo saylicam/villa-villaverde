@@ -1,25 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 export type AccordionItem = {
   title: string;
-  content: string | React.ReactNode;
+  content: string | ReactNode;
   defaultOpen?: boolean;
 };
 
-export default function Accordion({ items = [] as AccordionItem[] }) {
+type AccordionProps = {
+  items: AccordionItem[];
+  className?: string;
+};
+
+export default function Accordion({ items, className }: AccordionProps) {
   return (
-    <div className="space-y-3">
+    <div className={`space-y-3 ${className ?? ""}`}>
       {items.map((it, i) => (
-        <Item key={i} {...it} />
+        <Row key={i} item={it} />
       ))}
     </div>
   );
 }
 
-function Item({ title, content, defaultOpen }: AccordionItem) {
-  const [open, setOpen] = useState(!!defaultOpen);
+function Row({ item }: { item: AccordionItem }) {
+  const { title, content, defaultOpen } = item;
+  const [open, setOpen] = useState(Boolean(defaultOpen));
 
   return (
     <div className="rounded-xl border border-[color:var(--line)] bg-white">
@@ -31,8 +37,8 @@ function Item({ title, content, defaultOpen }: AccordionItem) {
       >
         <span className="font-medium">{title}</span>
         <span
-          className="inline-grid place-items-center size-7 rounded-full border border-[color:var(--line)]"
           aria-hidden
+          className="inline-grid place-items-center size-7 rounded-full border border-[color:var(--line)]"
         >
           <svg
             viewBox="0 0 24 24"
@@ -45,11 +51,9 @@ function Item({ title, content, defaultOpen }: AccordionItem) {
         </span>
       </button>
 
-      {open && (
-        <div className="px-4 pb-4 pt-1 text-[color:var(--muted)] leading-relaxed">
-          {typeof content === "string" ? <p>{content}</p> : content}
-        </div>
-      )}
+      <div className={`${open ? "block" : "hidden"} px-4 pb-4 pt-1 text-[color:var(--muted)] leading-relaxed`}>
+        {typeof content === "string" ? <p>{content}</p> : content}
+      </div>
     </div>
   );
 }
