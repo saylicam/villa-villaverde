@@ -1,23 +1,25 @@
+import ActivityCard, { type Activity } from "@/components/ActivityCard";
 import { client } from "@/lib/sanity";
 import { activitiesQuery } from "@/lib/queries";
-import ActivityCard from "@/components/ActivityCard";
 
 export const metadata = { title: "Activités & Guide — Villa Villaverde" };
 
 export default async function GuidePage() {
+  // On récupère les activités depuis Sanity (si dispo)
   let items: any[] = [];
   try {
     items = await client.fetch(activitiesQuery);
-  } catch (e) {}
+  } catch {
+    /* ignore */
+  }
 
-  const hasData = items && items.length > 0;
-  if (!hasData) {
-    // Fallback demo
+  // Fallback démo si pas de données Sanity
+  if (!items || items.length === 0) {
     items = [
-      { title: "Dunes de Corralejo", category: "Plage", distance: "15 min" },
-      { title: "El Cotillo", category: "Plage", distance: "20 min" },
-      { title: "Surf — Flag Beach", category: "Surf", distance: "18 min" },
-      { title: "Rando volcan Calderon Hondo", category: "Rando", distance: "12 min" },
+      { title: "Dunes de Corralejo", category: "Plages", distance: "≈ 15 min" },
+      { title: "El Cotillo", category: "Plages", distance: "≈ 20 min" },
+      { title: "Surf — Flag Beach", category: "Nautique", distance: "≈ 18 min" },
+      { title: "Calderón Hondo", category: "Volcans", distance: "≈ 12 min" },
     ];
   }
 
@@ -30,9 +32,20 @@ export default async function GuidePage() {
 
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
         {items.map((it: any) => (
-          <ActivityCard key={it._id || it.title} item={it} />
+          <ActivityCard
+            key={it._id ?? it.title}
+            // —— Props à plat attendues par ActivityCard ——
+            title={it.title}
+            category={it.category}
+            subtitle={it.subtitle ?? it.distance /* fallback lisible */}
+            img={it.img}
+            href={it.href}
+            objectPosition={it.objectPosition}
+            variant={it.variant ?? "poster"}
+          />
         ))}
       </div>
     </main>
   );
 }
+
