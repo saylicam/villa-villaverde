@@ -8,6 +8,7 @@ import AvailabilityTeaser from "@/components/AvailabilityTeaser";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import ActivityCard, { type Activity } from "@/components/ActivityCard";
+import Accordion from "@/components/Accordion";
 
 const RESA =
   process.env.NEXT_PUBLIC_RESA_URL ||
@@ -19,6 +20,13 @@ const MAP_Q = encodeURIComponent(ADDRESS);
 const GMAPS_URL = `https://www.google.com/maps?q=${MAP_Q}`;
 const GMAPS_EMBED = `https://maps.google.com/maps?q=${MAP_Q}&z=14&output=embed`;
 const APPLE_MAPS_URL = `https://maps.apple.com/?q=${MAP_Q}`;
+<Accordion
+  items={[
+    { title: "Capacité & configuration", content: "Bas 120 m² (6 pers). Haut 180 m² (7 pers).", defaultOpen: true },
+    { title: "Arrivée & départ", content: "Arrivée 16:00 – Départ 10:00." },
+    { title: "Règles", content: "Non-fumeur. Animaux non autorisés. Pas d’évènements." },
+  ]}
+/>
 
 export default async function Home() {
   return (
