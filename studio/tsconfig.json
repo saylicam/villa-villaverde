@@ -18,9 +18,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "plugins": [
-      { "name": "next" }
-    ]
+    "plugins": [{ "name": "next" }]
   },
   "include": [
     "next-env.d.ts",
@@ -34,8 +32,6 @@
   ],
   "exclude": [
     "node_modules",
-    "studio/**",
-    "**/*.test.*",
-    "**/__tests__/**"
+    "studio/**"
   ]
 }
