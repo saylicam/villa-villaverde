@@ -115,10 +115,10 @@ export default async function Home() {
               <TiltCard>
                 <a
                   href={c.link}
-                  className="suite-card group block rounded-2xl transition"
+                  className="suite-card group block transition"
                 >
                   {/* MEDIA – rectangles PLUS HAUTS */}
-                  <div className="suite-media relative overflow-hidden rounded-2xl aspect-[7/5] md:aspect-[8/5] xl:aspect-[9/5]">
+                  <div className="suite-media relative overflow-hidden aspect-[7/5] md:aspect-[8/5] xl:aspect-[9/5]">
                     <Image
                       src={c.img}
                       alt={c.title}
@@ -129,9 +129,9 @@ export default async function Home() {
                     />
                     {/* voile bas */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
-                    {/* filet bronze discrêt au hover */}
+                    {/* filet bronze discret au hover */}
                     <div
-                      className="pointer-events-none absolute inset-y-2 left-2 w-[2px] rounded-full opacity-0 scale-y-90 group-hover:opacity-100 group-hover:scale-y-100 transition duration-300"
+                      className="pointer-events-none absolute inset-y-2 left-2 w-[2px] opacity-0 scale-y-90 group-hover:opacity-100 group-hover:scale-y-100 transition duration-300"
                       style={{
                         background:
                           "linear-gradient(180deg,rgba(176,141,87,0),rgba(176,141,87,.55),rgba(176,141,87,0))",
@@ -140,7 +140,7 @@ export default async function Home() {
                   </div>
 
                   {/* PANNEAU “verre” chevauchant */}
-                  <div className="-mt-7 md:-mt-8 p-5 rounded-2xl bg-white/85 backdrop-blur-md ring-1 ring-[color:var(--line)] shadow-soft">
+                  <div className="-mt-7 md:-mt-8 p-5 bg-white/85 backdrop-blur-md ring-1 ring-[color:var(--line)] shadow-soft">
                     <div className="text-xs uppercase tracking-wide text-[color:var(--accent)]">
                       {c.tag}
                     </div>
@@ -278,7 +278,7 @@ export default async function Home() {
         </div>
 
         <div className="mt-8 text-center">
-          <a href="/activites" className="btn btn-light rounded-full px-5 py-2">
+          <a href="/activites" className="btn btn-light px-5 py-2">
             Voir toutes les activités
           </a>
         </div>
@@ -299,9 +299,9 @@ export default async function Home() {
           ].map((src, idx) => (
             <div
               key={src}
-              className={`relative rounded-2xl overflow-hidden ${
+              className={`relative overflow-hidden card ${
                 idx === 0 ? "md:col-span-2" : ""
-              } card`}
+              }`}
               style={{ aspectRatio: "16/10" }}
             >
               <Image
@@ -317,7 +317,7 @@ export default async function Home() {
         <div className="mt-8 text-center">
           <a
             href="/galerie"
-            className="btn btn-primary rounded-full px-6 py-3 inline-block"
+            className="btn btn-primary px-6 py-3 inline-block"
           >
             Ouvrir la galerie
           </a>
@@ -360,7 +360,7 @@ export default async function Home() {
 
         <div className="mt-6 grid md:grid-cols-2 gap-8 items-start">
           {/* Infos / règles */}
-          <div className="rounded-2xl overflow-hidden card">
+          <div className="overflow-hidden card">
             <div className="p-6 space-y-5">
               <div>
                 <div className="text-xs uppercase tracking-wide text-[color:var(--accent)]">
@@ -371,14 +371,14 @@ export default async function Home() {
                   <a
                     href={GMAPS_URL}
                     target="_blank"
-                    className="btn btn-light rounded-full px-4 py-2"
+                    className="btn btn-light px-4 py-2"
                   >
                     Ouvrir dans Google Maps
                   </a>
                   <a
                     href={APPLE_MAPS_URL}
                     target="_blank"
-                    className="btn btn-light rounded-full px-4 py-2"
+                    className="btn btn-light px-4 py-2"
                   >
                     Ouvrir dans Apple Plans
                   </a>
@@ -400,7 +400,7 @@ export default async function Home() {
           </div>
 
           {/* Carte embarquée */}
-          <div className="rounded-2xl overflow-hidden card">
+          <div className="overflow-hidden card">
             <div className="aspect-[16/10]">
               <iframe
                 src={GMAPS_EMBED}
@@ -425,7 +425,7 @@ export default async function Home() {
           <a
             href={RESA}
             target="_blank"
-            className="btn btn-dark rounded-full px-6 py-3 mt-5 inline-block"
+            className="btn btn-dark px-6 py-3 mt-5 inline-block"
           >
             Voir les disponibilités
           </a>

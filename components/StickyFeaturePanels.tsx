@@ -1,118 +1,77 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
 
 type Panel = {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   image: string;
-  objectPosition?: string; // ex: "50% 60%"
-};
-
-type Props = {
-  heading?: string;
-  panels: Panel[];
-  /** Conserve la compat API existante (ignoré dans cette version) */
-  heightVh?: number;
-  /** si ta Navbar est fixed et haute, set à true pour un petit offset de viewport sur mobile */
-  navOffset?: boolean;
+  objectPosition?: string; // ex "50% 50%"
 };
 
 export default function StickyFeaturePanels({
-  heading = "Villa Villaverde",
-  panels,
-  navOffset = true,
-}: Props) {
+  heading,
+  panels = [],
+}: {
+  heading?: string;
+  panels: Panel[];
+}) {
   return (
-    <section
-      className="relative py-8 md:py-16"
-      style={{ paddingTop: navOffset ? "calc(var(--nav-h, 64px) + 1rem)" : undefined }}
-    >
-      {/* En-tête */}
-      <div className="container mb-4 md:mb-10">
-        <div className="text-[11px] tracking-widest uppercase text-[color:var(--accent)]/80">
-          {heading}
+    <section className="py-16 md:py-24">
+      {/* Titre section (dans la grille centrale) */}
+      {heading && (
+        <div className="container mb-8 md:mb-12">
+          <h2 className="title-display h2">{heading}</h2>
         </div>
-      </div>
+      )}
 
-      {/* Lignes “split-bleed” */}
-      <div className="container space-y-16 md:space-y-28">
-        {panels.map((p, i) => (
-          <FeatureRow key={p.title} panel={p} flip={i % 2 === 1} />
-        ))}
+      {/* Panneaux alternés */}
+      <div className="space-y-20 md:space-y-28">
+        {panels.map((p, i) => {
+          const imageSideRight = i % 2 === 0; // 0,2,4 → image à droite ; 1,3,5 → image à gauche
+          return (
+            <div key={p.title} className="container">
+              <div className="grid grid-cols-12 items-center gap-x-6 md:gap-x-10">
+                {/* TEXTE */}
+                <div
+                  className={
+                    imageSideRight
+                      ? "col-span-12 md:col-span-5 md:order-1"
+                      : "col-span-12 md:col-span-5 md:col-start-8 md:order-2"
+                  }
+                >
+                  <h3 className="title-display text-[clamp(22px,3.2vw,34px)] leading-tight">
+                    {p.title}
+                  </h3>
+                  {p.subtitle && (
+                    <p className="lead mt-2">{p.subtitle}</p>
+                  )}
+                </div>
+
+                {/* IMAGE qui colle au bord du viewport */}
+                <div
+                  className={[
+                    "col-span-12 md:col-span-7 mt-6 md:mt-0",
+                    imageSideRight ? "md:order-2 edge-right" : "md:order-1 edge-left",
+                  ].join(" ")}
+                >
+                  <div className="relative w-full h-[54vh] md:h-[66vh] lg:h-[72vh] overflow-hidden">
+                    <Image
+                      src={p.image}
+                      alt={p.title}
+                      fill
+                      sizes="100vw"
+                      className="object-cover"
+                      style={{ objectPosition: p.objectPosition || "50% 50%" }}
+                      priority={i === 0}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
-  );
-}
-
-/** Une ligne : texte + grande image avec parallax doux */
-function FeatureRow({ panel, flip }: { panel: Panel; flip: boolean }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  // Parallax & fades déclenchés par le panneau lui-même
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 80%", "end 20%"], // quand ~20–80% du panneau est dans le viewport
-  });
-
-  // Image respire légèrement et glisse subtilement
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1.06, 1]);
-  const imgY = useTransform(scrollYProgress, [0, 1], ["-3%", "3%"]);
-
-  // Texte qui apparaît proprement
-  const txtY = useTransform(scrollYProgress, [0, 1], [20, 0]);
-  const txtOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0, 1, 1]);
-
-  return (
-    <div
-      ref={ref}
-      className="grid md:grid-cols-2 items-center gap-8 md:gap-12 min-h-[90vh]"
-    >
-      {/* Colonne texte */}
-      <motion.div
-        style={{ y: txtY, opacity: txtOpacity }}
-        className={`${flip ? "md:order-2" : ""}`}
-      >
-        <h3 className="title-display text-3xl md:text-5xl leading-tight">
-          {panel.title}
-        </h3>
-        <p className="lead mt-3 max-w-xl text-[color:var(--muted)]">
-          {panel.subtitle}
-        </p>
-      </motion.div>
-
-      {/* Colonne image (grande, bord-à-bord côté extérieur) */}
-      <motion.div
-        style={{ y: imgY, scale: imgScale }}
-        className={`${flip ? "md:order-1" : ""} relative`}
-      >
-        <div
-          className={[
-            // image très généreuse
-            "relative w-full h-[60vh] md:h-[72vh]",
-            // coins doux + fine bordure + légère lueur : premium, pas gadget
-            "overflow-hidden rounded-[28px] ring-1 ring-black/5 shadow-[0_30px_80px_rgba(0,0,0,.18)]",
-            // décalage vers le bord extérieur pour un effet “bleed”
-            flip ? "md:ml-[-6vw]" : "md:mr-[-6vw]",
-          ].join(" ")}
-        >
-          <Image
-            src={panel.image}
-            alt={panel.title}
-            fill
-            sizes="(max-width: 768px) 100vw, 60vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: panel.objectPosition || "50% 50%",
-            }}
-            priority={false}
-          />
-          {/* voile très léger pour lisibilité globale */}
-          <div className="absolute inset-0 pointer-events-none bg-black/0 md:bg-black/0" />
-        </div>
-      </motion.div>
-    </div>
   );
 }
