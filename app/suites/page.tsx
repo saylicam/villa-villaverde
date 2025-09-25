@@ -1,24 +1,47 @@
-// app/suites/page.tsx — page d’overview des 3 options
-import Section from "@/components/Section";
+// app/villa/page.tsx
 import Image from "next/image";
+import Section from "@/components/Section";
 
-export default function Suites() {
+export const metadata = { title: "La Villa — Villa Villaverde" };
+
+// Données locales (remplacent Sanity)
+const TITLE = "La Villa";
+const DESC =
+  "Villa lumineuse avec piscine privée, idéale pour se reposer et explorer le nord de Fuerteventura.";
+const HERO = "/images/hero/villaverde-livingroom-bright.jpg"; // vérifie la casse du fichier
+const EQUIPMENTS: string[] = ["Piscine privée", "Fibre / Wi-Fi", "Climatisation", "Parking"];
+
+export default function VillaPage() {
   return (
-    <Section>
-      <h1 className="title-serif h2">Suites & Villa entière</h1>
-      <p className="opacity-80 mt-2">Choisissez la configuration qui vous convient : étage haut (Mirador), niveau piscine (Jardin), ou privatisation complète.</p>
-      <div className="mt-8 grid md:grid-cols-3 gap-6">
-        {[
-          { t:"Suite Mirador", img:"/images/interiors/bedroom-mirador.jpg", href:"/suites/mirador" },
-          { t:"Suite Jardin", img:"/images/interiors/bedroom-garden.jpg", href:"/suites/jardin" },
-          { t:"Villa entière", img:"/images/hero/villaverde-pool-panorama.jpg", href:"/suites/villa" },
-        ].map(c=>(
-          <a key={c.t} href={c.href} className="block rounded-2xl overflow-hidden border border-black/10 bg-white">
-            <div className="relative aspect-[4/3]"><Image src={c.img} alt={c.t} fill style={{objectFit:"cover"}}/></div>
-            <div className="p-5 font-medium">{c.t}</div>
-          </a>
-        ))}
-      </div>
-    </Section>
+    <main>
+      {/* Hero */}
+      <section className="relative h-[50vh] min-h-[360px]">
+        <Image src={HERO} alt={TITLE} fill priority className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/10" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 h-full flex items-end pb-10">
+          <h1 className="text-4xl md:text-5xl font-semibold text-white">{TITLE}</h1>
+        </div>
+      </section>
+
+      {/* Contenu */}
+      <Section className="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16">
+        <div className="grid md:grid-cols-3 gap-10">
+          <div className="md:col-span-2">
+            <p className="opacity-80 leading-relaxed">{DESC}</p>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold">Équipements</h2>
+            <ul className="mt-4 space-y-2">
+              {EQUIPMENTS.map((e, i) => (
+                <li key={i} className="rounded-lg border border-black/10 bg-white px-3 py-2">
+                  {e}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
+    </main>
   );
 }
